@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">{{ list.name }}</h2>
+            <a href="{% url 'index' %}" class="btn btn-sm btn-outline-secondary">← Volver</a>
+        </div>
+
+        <div class="card p-4 shadow">
+            <form method="POST" class="input-group mb-4">
+                {% csrf_token %}
+                <input type="text" name="title" class="form-control bg-dark text-white border-secondary" placeholder="¿Qué hay que hacer?" required>
+                <button class="btn btn-primary" type="submit">Añadir</button>
+            </form>
+
+            <div class="list-group">
+                {% for task in tasks %}
+                <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <h5 class="mb-1 {% if task.completed %}text-muted text-decoration-line-through{% endif %}">
+                            {{ task.title }}
+                        </h5>
+                        {% if task.completed %}
+                            <span class="badge bg-success text-dark">Hecha</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'toggle_task' task.id %}" class="btn btn-sm {% if task.completed %}btn-outline-light{% else %}btn-success{% endif %}">
+                            {% if task.completed %}Desmarcar{% else %}Completar{% endif %}
+                        </a>
+                        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted my-3">No hay tareas todavía. ¡Añade la primera!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos extra para las etiquetas */
+    .badge {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+    .list-group-item {
+        border-color: #333 !important;
+    }
+</style>
+{% endblock %}
