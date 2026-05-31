@@ -5,7 +5,7 @@
     <div class="col-md-8">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">{{ list.name }}</h2>
-            <a href="{% url 'index' %}" class="btn btn-sm btn-outline-secondary">← Volver</a>
+            <a href="{% url 'lists_root' %}" class="btn btn-sm btn-outline-secondary">← Volver</a>
         </div>
 
         <div class="card p-4 shadow">
@@ -30,10 +30,10 @@
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <a href="{% url 'toggle_task' task.id %}" class="btn btn-sm {% if task.completed %}btn-outline-light{% else %}btn-success{% endif %}">
+                        <button onclick="toggleTask('{{ list.id }}', '{{ task.id }}')" class="btn btn-sm {% if task.completed %}btn-outline-light{% else %}btn-success{% endif %}">
                             {% if task.completed %}Desmarcar{% else %}Completar{% endif %}
-                        </a>
-                        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </button>
+                        <button onclick="deleteTask('{{ list.id }}', '{{ task.id }}')" class="btn btn-sm btn-danger">Eliminar</button>
                     </div>
                 </div>
                 {% empty %}
@@ -43,6 +43,40 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleTask(listId, taskId) {
+    fetch(`/lists/${listId}/tasks/${taskId}/`, {
+        method: 'PATCH',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    }).then(response => {
+        if (response.status === 200) {
+            window.location.reload();
+        } else {
+            alert('Error al actualizar la tarea.');
+        }
+    });
+}
+
+function deleteTask(listId, taskId) {
+    if (confirm('¿Seguro que deseas eliminar esta tarea?')) {
+        fetch(`/lists/${listId}/tasks/${taskId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => {
+            if (response.status === 204) {
+                window.location.reload();
+            } else {
+                alert('Error al eliminar la tarea.');
+            }
+        });
+    }
+}
+</script>
 
 <style>
     /* Estilos extra para las etiquetas */
