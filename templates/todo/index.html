@@ -21,9 +21,9 @@
                 <a href="{% url 'task_detail' list.id %}" class="text-dark text-decoration-none fw-bold fs-5 d-flex align-items-center">
                     <span class="me-2">📁</span> {{ list.name }}
                 </a>
-                <a href="{% url 'delete_list' list.id %}" class="btn btn-sm btn-outline-danger border-0 fw-bold">
+                <button onclick="deleteList('{{ list.id }}')" class="btn btn-sm btn-outline-danger border-0 fw-bold">
                     Eliminar
-                </a>
+                </button>
             </div>
             {% empty %}
             <div class="text-center mt-5">
@@ -34,6 +34,25 @@
         </div>
     </div>
 </div>
+
+<script>
+function deleteList(listId) {
+    if (confirm('¿Seguro que deseas eliminar esta lista junto con todas sus tareas?')) {
+        fetch(`/lists/${listId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => {
+            if (response.status === 204) {
+                window.location.reload();
+            } else {
+                alert('Ocurrió un error al eliminar la lista.');
+            }
+        });
+    }
+}
+</script>
 
 <style>
     /* Efecto de elevar la lista al pasar el ratón */
