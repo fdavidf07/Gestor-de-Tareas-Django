@@ -59,7 +59,7 @@
 <body>
     <nav class="navbar navbar-dark mb-5 shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'index' %}">🚀 TaskMaster</a>
+            <a class="navbar-brand fw-bold" href="{% url 'lists_root' %}">🚀 TaskMaster</a>
             <div>
                 {% if user.is_authenticated %}
                     <span class="me-3 small opacity-75">Sesión de: <strong>{{ user.username }}</strong></span>
